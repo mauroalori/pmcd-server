@@ -1,0 +1,49 @@
+# General
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Node (React + Vite)
+node_modules/
+dist/
+.vite/
+
+# Editor config
+.vscode/
+.idea/
+
+# Env files
+.env
+.env.*.local
+*.env.local
+
+# Kubernetes configs
+*.kubeconfig
+minikube-linux-amd64
+*.crt
+*.key
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# OS files
+Thumbs.db
+ehthumbs.db
+
+# Frontend build artifacts
+frontend/.next/
+frontend/out/
+
+# Python (si usás algo en Python)
+__pycache__/
+*.pyc
+
+# MQTT config (si hay archivos sensibles)
+**/mosquitto/passwd
+**/mosquitto/secret.conf
+
+# PostgreSQL local (por si persistís volumenes en el host)
+pgdata/
+postgres-data/
