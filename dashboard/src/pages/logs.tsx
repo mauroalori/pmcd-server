@@ -306,7 +306,7 @@ export default function LogsPage() {
                   <TableCell>
                     <Badge
                       variant={
-                        log.status === "critical" ? "destructive" : log.status === "warning" ? "warning" : "success"
+                        log.status === "critical" ? "destructive" : log.status === "warning" ? "secondary" : "default"
                       }
                     >
                       {log.status === "critical" ? "Crítico" : log.status === "warning" ? "Advertencia" : "Normal"}

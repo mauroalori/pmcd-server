@@ -55,7 +55,7 @@ export default function Dashboard() {
   // Función para generar datos aleatorios de sensores
   const generateRandomSensorData = () => {
     // Generar datos para sensores de presión
-    const newPressureSensors = pressureSensors.map((sensor, index) => {
+    const newPressureSensors = pressureSensors.map((sensor) => {
       // Simular fluctuaciones alrededor del valor actual
       let newValue = sensor.value
       if (newValue === 0) {
@@ -157,7 +157,7 @@ export default function Dashboard() {
               <CardTitle className="text-sm font-medium">Sensor de Presión {index + 1}</CardTitle>
               <Badge
                 variant={
-                  sensor.status === "critical" ? "destructive" : sensor.status === "warning" ? "warning" : "success"
+                  sensor.status === "critical" ? "destructive" : sensor.status === "warning" ? "secondary" : "default"
                 }
               >
                 {sensor.status === "critical" ? "Crítico" : sensor.status === "warning" ? "Advertencia" : "Normal"}
@@ -169,7 +169,6 @@ export default function Dashboard() {
                 <div className="mt-4 h-[120px] w-full">
                   <LineChart
                     data={pressureHistory[index].values}
-                    labels={pressureHistory[index].timestamps.map((t) => t.toLocaleTimeString())}
                     color={
                       sensor.status === "critical" ? "#ef4444" : sensor.status === "warning" ? "#f59e0b" : "#22c55e"
                     }
@@ -196,8 +195,8 @@ export default function Dashboard() {
                 humiditySensor.status === "critical"
                   ? "destructive"
                   : humiditySensor.status === "warning"
-                    ? "warning"
-                    : "success"
+                    ? "secondary"
+                    : "default"
               }
             >
               {humiditySensor.status === "critical"
@@ -220,7 +219,6 @@ export default function Dashboard() {
               <div className="mt-4 h-[120px] w-full">
                 <LineChart
                   data={humidityHistory.values}
-                  labels={humidityHistory.timestamps.map((t) => t.toLocaleTimeString())}
                   color={
                     humiditySensor.status === "critical"
                       ? "#ef4444"
@@ -248,8 +246,8 @@ export default function Dashboard() {
                 temperatureSensor.status === "critical"
                   ? "destructive"
                   : temperatureSensor.status === "warning"
-                    ? "warning"
-                    : "success"
+                    ? "secondary"
+                    : "default"
               }
             >
               {temperatureSensor.status === "critical"
@@ -272,7 +270,6 @@ export default function Dashboard() {
               <div className="mt-4 h-[120px] w-full">
                 <LineChart
                   data={temperatureHistory.values}
-                  labels={temperatureHistory.timestamps.map((t) => t.toLocaleTimeString())}
                   color={
                     temperatureSensor.status === "critical"
                       ? "#ef4444"

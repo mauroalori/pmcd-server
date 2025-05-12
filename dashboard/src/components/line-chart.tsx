@@ -4,12 +4,11 @@ import { useEffect, useRef } from "react"
 
 type LineChartProps = {
   data: number[]
-  labels: string[]
   color?: string
   height?: number
 }
 
-export function LineChart({ data, labels, color = "#3b82f6", height = 120 }: LineChartProps) {
+export function LineChart({ data, color = "#3b82f6", height = 120 }: LineChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
