@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Gauge } from "@/components/gauge"
 import { LineChart } from "@/components/line-chart"
 import { Droplets, Thermometer } from "lucide-react"
@@ -147,6 +146,11 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [pressureSensors, humiditySensor, temperatureSensor, pressureHistory, humidityHistory, temperatureHistory])
 
+  // Determinar colores basados en el estado
+  const getColorForStatus = (status: string) => {
+    return status === "critical" ? "#ef4444" : status === "warning" ? "#f59e0b" : "#22c55e"
+  }
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -155,24 +159,19 @@ export default function Dashboard() {
           <Card key={`pressure-${index}`}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Sensor de Presión {index + 1}</CardTitle>
-              <Badge
-                variant={
-                  sensor.status === "critical" ? "destructive" : sensor.status === "warning" ? "secondary" : "default"
-                }
-              >
-                {sensor.status === "critical" ? "Crítico" : sensor.status === "warning" ? "Advertencia" : "Normal"}
-              </Badge>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col items-center">
-                <Gauge value={sensor.value} max={100} label="PSI" size="medium" showValue status={sensor.status} />
+                <Gauge
+                  value={sensor.value}
+                  max={100}
+                  label="PSI"
+                  size="medium"
+                  showValue
+                  color={getColorForStatus(sensor.status)}
+                />
                 <div className="mt-4 h-[120px] w-full">
-                  <LineChart
-                    data={pressureHistory[index].values}
-                    color={
-                      sensor.status === "critical" ? "#ef4444" : sensor.status === "warning" ? "#f59e0b" : "#22c55e"
-                    }
-                  />
+                  <LineChart data={pressureHistory[index].values} color={getColorForStatus(sensor.status)} />
                 </div>
               </div>
             </CardContent>
@@ -180,109 +179,45 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Sensor de humedad */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              <div className="flex items-center gap-2">
-                <Droplets className="h-4 w-4" />
-                <span>Sensor de Humedad</span>
-              </div>
-            </CardTitle>
-            <Badge
-              variant={
-                humiditySensor.status === "critical"
-                  ? "destructive"
-                  : humiditySensor.status === "warning"
-                    ? "secondary"
-                    : "default"
-              }
-            >
-              {humiditySensor.status === "critical"
-                ? "Crítico"
-                : humiditySensor.status === "warning"
-                  ? "Advertencia"
-                  : "Normal"}
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center">
-              <Gauge
-                value={humiditySensor.value}
-                max={100}
-                label="%"
-                size="medium"
-                showValue
-                status={humiditySensor.status}
-              />
-              <div className="mt-4 h-[120px] w-full">
-                <LineChart
-                  data={humidityHistory.values}
-                  color={
-                    humiditySensor.status === "critical"
-                      ? "#ef4444"
-                      : humiditySensor.status === "warning"
-                        ? "#f59e0b"
-                        : "#22c55e"
-                  }
-                />
+      {/* Card combinada para temperatura y humedad */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm font-medium">Temperatura y Humedad</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Temperatura */}
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-full">
+                    <Thermometer className="h-6 w-6 text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Temperatura</p>
+                    <h3 className="text-2xl font-bold">{temperatureSensor.value.toFixed(1)}°C</h3>
+                  </div>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Sensor de temperatura */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              <div className="flex items-center gap-2">
-                <Thermometer className="h-4 w-4" />
-                <span>Sensor de Temperatura</span>
-              </div>
-            </CardTitle>
-            <Badge
-              variant={
-                temperatureSensor.status === "critical"
-                  ? "destructive"
-                  : temperatureSensor.status === "warning"
-                    ? "secondary"
-                    : "default"
-              }
-            >
-              {temperatureSensor.status === "critical"
-                ? "Crítico"
-                : temperatureSensor.status === "warning"
-                  ? "Advertencia"
-                  : "Normal"}
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center">
-              <Gauge
-                value={temperatureSensor.value}
-                max={50}
-                label="°C"
-                size="medium"
-                showValue
-                status={temperatureSensor.status}
-              />
-              <div className="mt-4 h-[120px] w-full">
-                <LineChart
-                  data={temperatureHistory.values}
-                  color={
-                    temperatureSensor.status === "critical"
-                      ? "#ef4444"
-                      : temperatureSensor.status === "warning"
-                        ? "#f59e0b"
-                        : "#22c55e"
-                  }
-                />
+            {/* Humedad */}
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                    <Droplets className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Humedad</p>
+                    <h3 className="text-2xl font-bold">{humiditySensor.value.toFixed(1)}%</h3>
+                  </div>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

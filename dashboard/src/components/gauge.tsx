@@ -9,10 +9,10 @@ type GaugeProps = {
   label?: string
   size?: "small" | "medium" | "large"
   showValue?: boolean
-  status?: "normal" | "warning" | "critical"
+  color?: string
 }
 
-export function Gauge({ value, max, label, size = "medium", showValue = false, status = "normal" }: GaugeProps) {
+export function Gauge({ value, max, label, size = "medium", showValue = false, color = "#22c55e" }: GaugeProps) {
   const [displayValue, setDisplayValue] = useState(0)
 
   // Animación del valor
@@ -38,95 +38,51 @@ export function Gauge({ value, max, label, size = "medium", showValue = false, s
 
   // Calcular el porcentaje y el ángulo para el gauge
   const percentage = (displayValue / max) * 100
-  const angle = (percentage * 270) / 100 - 135 // -135 a 135 grados
 
   // Determinar el tamaño basado en la prop size
   const sizeClasses = {
-    small: "w-24 h-24",
-    medium: "w-32 h-32",
-    large: "w-40 h-40",
-  }
-
-  // Determinar el color basado en el estado
-  const statusColors = {
-    normal: {
-      text: "text-green-500",
-      stroke: "stroke-green-500",
-    },
-    warning: {
-      text: "text-yellow-500",
-      stroke: "stroke-yellow-500",
-    },
-    critical: {
-      text: "text-red-500",
-      stroke: "stroke-red-500",
-    },
+    small: "w-24 h-12",
+    medium: "w-32 h-16",
+    large: "w-40 h-20",
   }
 
   return (
     <div className="flex flex-col items-center">
       <div className={cn("relative flex items-center justify-center", sizeClasses[size])}>
-        {/* Fondo del gauge */}
-        <svg className="w-full h-full" viewBox="0 0 100 100">
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
+        {/* Fondo del gauge (semicírculo) */}
+        <svg className="w-full h-full" viewBox="0 0 100 50">
+          <path
+            d="M10,50 A40,40 0 0,1 90,50"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
             className="text-muted/20"
-            strokeDasharray="270"
-            strokeDashoffset="0"
             strokeLinecap="round"
-            transform="rotate(-135 50 50)"
           />
-          {/* Indicador del gauge */}
-          <circle
-            cx="50"
-            cy="50"
-            r="40"
+          {/* Indicador del gauge (semicírculo) */}
+          <path
+            d="M10,50 A40,40 0 0,1 90,50"
             fill="none"
+            stroke={color}
             strokeWidth="8"
-            className={statusColors[status].stroke}
-            strokeDasharray="270"
-            strokeDashoffset={270 - (percentage * 270) / 100}
+            strokeDasharray="126"
+            strokeDashoffset={126 - (percentage * 126) / 100}
             strokeLinecap="round"
-            transform="rotate(-135 50 50)"
           />
         </svg>
 
-        {/* Aguja indicadora */}
-        <div
-          className="absolute w-1 bg-foreground rounded-full origin-bottom"
-          style={{
-            height: size === "small" ? "30%" : size === "medium" ? "35%" : "40%",
-            transform: `rotate(${angle}deg)`,
-            transformOrigin: "bottom center",
-            bottom: "50%",
-            left: "calc(50% - 1px)",
-          }}
-        />
-
-        {/* Punto central */}
-        <div className="absolute w-3 h-3 bg-foreground rounded-full" />
+        {/* Valor en el centro */}
+        {showValue && (
+          <div className="absolute bottom-0 text-center">
+            <span
+              className={cn("font-bold", size === "small" ? "text-sm" : size === "medium" ? "text-xl" : "text-2xl")}
+            >
+              {displayValue.toFixed(1)}
+              {label && <span className="ml-1 text-xs">{label}</span>}
+            </span>
+          </div>
+        )}
       </div>
-
-      {/* Valor y etiqueta - ahora fuera del gauge */}
-      {showValue && (
-        <div className="mt-2 text-center">
-          <span
-            className={cn(
-              "font-bold",
-              size === "small" ? "text-sm" : size === "medium" ? "text-xl" : "text-2xl",
-              statusColors[status].text,
-            )}
-          >
-            {displayValue.toFixed(1)}
-            {label && <span className="ml-1 text-xs">{label}</span>}
-          </span>
-        </div>
-      )}
     </div>
   )
 }
