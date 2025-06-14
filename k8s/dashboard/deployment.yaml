@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: dashboard-container
-          image: dashboard
+          image: mauroalori/pmcd-dashboard:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:
