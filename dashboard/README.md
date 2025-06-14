@@ -1,61 +1,95 @@
-# 🔄 Actualización y prueba del Dashboard en Minikube
+# PMCD Monitoring Dashboard
 
-Este documento describe los pasos para actualizar y probar la aplicación **Dashboard** dentro del clúster de desarrollo local con **Minikube**, una vez que el entorno ya está configurado.
+This dashboard provides a web interface for real-time monitoring of PMCD system sensors.
 
+## Features
 
-## 🚀 Pasos para actualizar y ver los cambios
+- Real-time sensor data visualization
+- Configurable pressure gauge
+- Historical value graph
+- Status indicators (normal, warning, critical)
+- Temperature monitoring
 
-1. ### 🔧 Compilar el proyecto
+## Requirements
 
-   Generar los archivos de salida (ej. `dist/`):
+- Node.js 18 or higher
+- npm or yarn
+- MQTT Broker (Mosquitto)
 
-   ```bash
-   pnpm run build
-   ```
+## Installation
 
-2. ### 🐳 Buildear la imagen Docker dentro del entorno de Minikube
+1. Install dependencies:
+```bash
+cd dashboard
+npm install
+```
 
-   Primero, asegurate de que tu terminal use el Docker de Minikube:
+2. Configure environment variables:
+Create a `.env.local` file with:
+```
+NEXT_PUBLIC_MQTT_BROKER=ws://localhost:9001
+```
 
-   ```bash
-   eval $(minikube docker-env)
-   ```
+## Development
 
-   Luego, construí la imagen `dashboard` (reemplazá `.` si tu Dockerfile está en otra ruta):
+To start the development server:
+```bash
+npm run dev
+```
 
-   ```bash
-   docker build -t dashboard .
-   ```
+The dashboard will be available at `http://localhost:3000`
 
-3. ### ♻️ Reiniciar el deployment de Kubernetes
+## Project Structure
 
-   Para que los pods usen la nueva imagen `dashboard` recién construída:
+```
+dashboard/
+├── src/
+│   ├── components/     # Reusable components
+│   ├── pages/         # Application pages
+│   └── lib/           # Utilities and configurations
+├── public/            # Static files
+└── package.json       # Dependencies and scripts
+```
 
-   ```bash
-   kubectl rollout restart deployment dashboard
-   ```
+## MQTT Topics
 
-## ✅ Verificación
+The dashboard subscribes to the following topics:
 
-   Podés verificar que los pods estén actualizados con:
-
-   ```bash
-   kubectl get pods
-   kubectl describe deployment dashboard
-   ```
-
-   Y acceder al servicio vía:
-
-   ```bash
-   minikube service dashboard
-   ```
-
-
-## 📌 Notas
-
-* Asegurate de que el `imagePullPolicy` esté en `IfNotPresent` o no definido para que Kubernetes use la imagen local.
-* Si querés ver logs de la app en tiempo real:
-
-  ```bash
-  kubectl logs -f deployment/dashboard
+- `pmcd/pressure/1`: Pressure sensor data
+  ```json
+  {
+    "value": 123456,  // value in pascals
+    "time": "2024-03-21T12:34:56Z"  // ISO timestamp
+  }
   ```
+
+- `pmcd/temp`: Temperature data
+  ```json
+  {
+    "value": 25.5,    // value in Celsius
+    "time": "2024-03-21T12:34:56Z"  // ISO timestamp
+  }
+  ```
+
+## Pressure Configuration
+
+The dashboard allows configuration of:
+- Minimum pressure (Pa)
+- Maximum pressure (Pa, default 200,000)
+
+States are automatically determined:
+- Normal: < 80% of range
+- Warning: 80-90% of range
+- Critical: > 90% of range
+
+## Production Build
+
+To build the application for production:
+```bash
+npm run build
+```
+
+To start the production version:
+```bash
+npm start
+```
