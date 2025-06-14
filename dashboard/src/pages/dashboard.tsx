@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Gauge } from "@/components/gauge"
 import { LineChart } from "@/components/line-chart"
-import { Droplets, Thermometer } from "lucide-react"
+import { Thermometer } from "lucide-react"
 import mqtt from 'mqtt'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
