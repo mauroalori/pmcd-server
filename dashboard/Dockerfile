@@ -1,7 +1,10 @@
-FROM nginx:latest
+FROM arm32v7/nginx:alpine
 
 # Crear un directorio para la aplicación
 WORKDIR /usr/share/nginx/html
+
+# Eliminar archivos por defecto de nginx
+RUN rm -rf /usr/share/nginx/html/*
 
 # Copiar la build de la aplicación React
 COPY ./dist .
