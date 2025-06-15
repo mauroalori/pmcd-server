@@ -84,7 +84,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Conectar al broker MQTT
-    const client = mqtt.connect('ws://localhost:9001') // Ajusta la URL según tu configuración
+    const client = mqtt.connect('ws://pmcd.local:30091') // Ajusta la URL según tu configuración
 
     client.on('connect', () => {
       console.log('Conectado al broker MQTT')
