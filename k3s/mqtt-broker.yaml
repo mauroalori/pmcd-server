@@ -41,8 +41,7 @@ spec:
             memory: "64Mi"
         volumeMounts:
         - name: config-volume
-          mountPath: /mosquitto/config/mosquitto.conf
-          subPath: mosquitto.conf
+          mountPath: /mosquitto/config
       volumes:
       - name: config-volume
         configMap:
@@ -60,8 +59,10 @@ spec:
       protocol: TCP
       port: 1883
       targetPort: 1883
+      nodePort: 30883
     - name: ws
       protocol: TCP
       port: 9001
       targetPort: 9001
-  type: NodePort 
+      nodePort: 30091
+  type: NodePort

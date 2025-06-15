@@ -15,7 +15,7 @@ spec:
       containers:
         - name: dashboard-container
           image: mauroalori/pmcd-dashboard:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: "200m"
@@ -37,4 +37,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: LoadBalancer
+      nodePort: 30080
+  type: NodePort
