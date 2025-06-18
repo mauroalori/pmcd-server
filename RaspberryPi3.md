@@ -45,6 +45,12 @@ Raspberry Pi OS Bookworm uses **Network Manager** by default, so you no longer n
    sudo nmcli con modify hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
    ```
 
+4. **Configure una IP estática para evitar conflictos con k3s:**
+   ```bash
+   sudo nmcli connection modify hotspot ipv4.addresses 10.10.10.1/24
+   sudo nmcli connection modify hotspot ipv4.method shared
+   ```
+
 If everything is correct, your access point should be up and visible within a few seconds.  
 You can now connect to it from another device (computer, phone, etc.).
 
