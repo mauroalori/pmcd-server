@@ -20,11 +20,6 @@ type SensorHistory = {
   timestamps: Date[]
 }
 
-// Tipo para los mensajes MQTT
-type MQTTSensorMessage = {
-  value: number
-  time: string
-}
 
 export default function Dashboard() {
   // Estado para los datos de sensores en tiempo real
@@ -92,27 +87,27 @@ export default function Dashboard() {
 
     client.on('connect', () => {
       console.log('Conectado al broker MQTT')
-      // Suscribirse a todos los tópicos de pmcd
-      client.subscribe('pmcd/#', (err) => {
+      // Suscribirse a los tópicos de temperatura y presión
+      client.subscribe(['temp', 'pamb'], (err) => {
         if (err) {
-          console.error('Error al suscribirse al tópico:', err)
+          console.error('Error al suscribirse a los tópicos:', err)
         } else {
-          console.log('Suscripción exitosa a tópicos pmcd/#')
+          console.log('Suscripción exitosa a tópicos temp y pamb')
         }
       })
     })
 
     client.on('message', (topic, message) => {
-      const data: MQTTSensorMessage = JSON.parse(message.toString())
-      const timestamp = new Date(data.time)
-
-      if (topic === 'pmcd/pressure/1') {
-        const status = determineStatus(data.value, 'pressure')
+      const data = message.toString()
+      console.log(topic, data)
+      if (topic === 'pamb') {
+        const pressureValue = Number(data)
+        const status = determineStatus(pressureValue, 'pressure')
         setPressureSensors(prev => {
           const newSensors = [...prev]
           newSensors[0] = {
-            value: data.value,
-            timestamp,
+            value: pressureValue,
+            timestamp: new Date(),
             status,
           }
           return newSensors
@@ -120,11 +115,11 @@ export default function Dashboard() {
 
         setPressureHistory(prev => {
           const newHistory = [...prev]
-          newHistory[0] = updateHistory(prev[0], data.value, timestamp)
+          newHistory[0] = updateHistory(prev[0], pressureValue, new Date())
           return newHistory
         })
-      } else if (topic === 'pmcd/temp') {
-        setTemperature(data.value)
+      } else if (topic === 'temp') {
+        setTemperature(Number(data))
       }
     })
 
