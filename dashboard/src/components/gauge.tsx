@@ -73,11 +73,11 @@ export function Gauge({ value, max, label, size = "medium", showValue = false, c
 
         {/* Valor en el centro */}
         {showValue && (
-          <div className="absolute bottom-0 text-center">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <span
-              className={cn("font-bold", size === "small" ? "text-sm" : size === "medium" ? "text-xl" : "text-2xl")}
+              className={"font-bold text-white drop-shadow-lg text-md"}
             >
-              {displayValue.toFixed(1)}
+              {displayValue}
               {label && <span className="ml-1 text-xs">{label}</span>}
             </span>
           </div>

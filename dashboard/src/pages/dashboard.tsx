@@ -8,6 +8,7 @@ import { Thermometer } from "lucide-react"
 import mqtt from 'mqtt'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useConnection } from "@/contexts/connection-context"
 // Tipos para los datos de sensores
 type SensorData = {
   value: number
@@ -37,6 +38,8 @@ export default function Dashboard() {
     min: 0,
     max: 200000
   })
+  // Estado de conexión desde el contexto
+  const { isConnected, setIsConnected } = useConnection()
 
   // Función para determinar el estado basado en el valor
   const determineStatus = (value: number, type: 'pressure' | 'humidity' | 'temperature'): "normal" | "warning" | "critical" => {
@@ -87,6 +90,7 @@ export default function Dashboard() {
 
     client.on('connect', () => {
       console.log('Conectado al broker MQTT')
+      setIsConnected(true)
       // Suscribirse a los tópicos de temperatura y presión
       client.subscribe(['temp', 'pamb'], (err) => {
         if (err) {
@@ -95,6 +99,15 @@ export default function Dashboard() {
           console.log('Suscripción exitosa a tópicos temp y pamb')
         }
       })
+    })
+
+    client.on('close', () => {
+      setIsConnected(false)
+    })
+
+    client.on('error', (error) => {
+      setIsConnected(false)
+      console.error('Error en la conexión MQTT:', error)
     })
 
     client.on('message', (topic, message) => {
@@ -123,10 +136,6 @@ export default function Dashboard() {
       }
     })
 
-    client.on('error', (error) => {
-      console.error('Error en la conexión MQTT:', error)
-    })
-
     // Limpiar la conexión al desmontar el componente
     return () => {
       client.end()
@@ -140,6 +149,18 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Indicador de estado de conexión */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <span className="text-sm font-medium">
+              {isConnected ? 'Conectado' : 'Desconectado'}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+      
       <div className="grid gap-4 md:grid-cols-1">
         {/* Sensor de presión */}
         {pressureSensors.map((sensor, index) => (

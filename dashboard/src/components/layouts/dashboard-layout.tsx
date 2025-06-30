@@ -16,7 +16,6 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "@/components/mode-toggle"
 import { Gauge, LayoutDashboard, ListFilter, Moon, Sun } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
 
@@ -80,7 +79,7 @@ export default function DashboardLayout() {
                 {location.pathname === "/" ? "Dashboard de Sensores" : "Registros de Sensores"}
               </h1>
             </div>
-            <ModeToggle />
+
           </header>
           <main>
             <Outlet />
