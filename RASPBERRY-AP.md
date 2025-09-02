@@ -18,6 +18,21 @@ This is important to ensure legal wireless channels are used.
 
 <!-- Optionally, add an image here if available -->
 
+## 1.1 Configure the Hostname (Required)
+
+Set the Raspberry Pi hostname to "pmcd". This is required for the system to function correctly.
+
+1. Open the configuration tool:
+   ```bash
+   sudo raspi-config
+   ```
+2. Go to `System Options` → `Hostname`.
+3. Enter `pmcd`.
+4. Confirm and reboot:
+   ```bash
+   sudo reboot
+   ```
+
 ---
 
 ## 2. Create the Access Point with Network Manager
