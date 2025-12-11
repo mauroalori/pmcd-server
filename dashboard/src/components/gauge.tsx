@@ -56,7 +56,7 @@ export function Gauge({ value, max, label, size = "medium", showValue = false, c
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
-            className="text-muted/20"
+            className="text-muted-foreground/30 dark:text-muted-foreground/20"
             strokeLinecap="round"
           />
           {/* Indicador del gauge (semicírculo) */}
@@ -75,9 +75,9 @@ export function Gauge({ value, max, label, size = "medium", showValue = false, c
         {showValue && (
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <span
-              className={"font-bold text-white drop-shadow-lg text-md"}
+              className={"font-bold text-foreground drop-shadow-lg text-md"}
             >
-              {displayValue}
+              {displayValue.toFixed(1)}
               {label && <span className="ml-1 text-xs">{label}</span>}
             </span>
           </div>
